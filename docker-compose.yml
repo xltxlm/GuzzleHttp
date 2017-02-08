@@ -1,0 +1,9 @@
+version: '2'
+services:
+
+  php:
+    image: registry.cn-hangzhou.aliyuncs.com/xialintai/phpnginx
+    volumes:
+      - ./:/var/www/html/
+      - ./:/opt/logs/
+    restart: always

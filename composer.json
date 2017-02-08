@@ -1,0 +1,28 @@
+{
+  "name": "xltxlm/guzzlehttp",
+  "description": "GuzzleHttp作为底层的http接口",
+  "authors": [
+    {
+      "name": "xltxlm",
+      "email": "xltxlm@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "guzzlehttp/guzzle": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "xltxlm\\guzzlehttp\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "xltxlm\\guzzlehttp\\": [
+        "./"
+      ]
+    }
+  }
+}
