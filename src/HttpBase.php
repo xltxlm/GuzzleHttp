@@ -38,6 +38,7 @@ trait HttpBase
         $this->setUrl($url);
     }
 
+
     /**
      * @return string
      */

@@ -29,6 +29,7 @@ class Get
                 //不检查https证书的合法性
                 'verify' => false,
                 'debug' => $this->debug,
+                'body' => $this->getBody(),
             ];
 
         $response = $client->get($this->getUrl(), $options);
