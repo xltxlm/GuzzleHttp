@@ -30,6 +30,15 @@ trait HttpBase
     protected $debug = false;
 
     /**
+     * HttpBase constructor.
+     * @param string $url
+     */
+    public function __construct($url)
+    {
+        $this->setUrl($url);
+    }
+
+    /**
      * @return string
      */
     public function getUrl(): string
