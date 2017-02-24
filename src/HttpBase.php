@@ -33,7 +33,7 @@ trait HttpBase
      * HttpBase constructor.
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct($url = "")
     {
         $this->setUrl($url);
     }
