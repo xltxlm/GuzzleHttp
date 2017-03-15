@@ -25,6 +25,7 @@ class Post
                 //不检查https证书的合法性
                 'verify' => false,
                 'debug' => $this->isDebug(),
+                'auth' => [$this->getUser(), $this->getPasswd()],
                 'form_params' => $this->getBody()
             ];
 

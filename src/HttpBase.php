@@ -29,6 +29,47 @@ trait HttpBase
     /** @var bool */
     protected $debug = false;
 
+    /** @var string 开启http认证的账户 */
+    protected $user = "";
+    /** @var string 开启http认证的密码 */
+    protected $passwd = "";
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     * @return static
+     */
+    public function setUser(string $user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswd(): string
+    {
+        return $this->passwd;
+    }
+
+    /**
+     * @param string $passwd
+     * @return static
+     */
+    public function setPasswd(string $passwd)
+    {
+        $this->passwd = $passwd;
+        return $this;
+    }
+
     /**
      * HttpBase constructor.
      * @param string $url

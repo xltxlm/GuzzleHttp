@@ -28,6 +28,7 @@ class PostToJava
                 //不检查https证书的合法性
                 'verify' => false,
                 'debug' => $this->isDebug(),
+                'auth' => [$this->getUser(), $this->getPasswd()],
                 'body' => $this->getBody(),
             ];
 
