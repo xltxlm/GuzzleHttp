@@ -17,6 +17,26 @@ use GuzzleHttp\Client;
 class PostToJava
 {
     use HttpBase;
+    protected $put = false;
+
+    /**
+     * @return bool
+     */
+    public function isPut(): bool
+    {
+        return $this->put;
+    }
+
+    /**
+     * @param bool $put
+     * @return PostToJava
+     */
+    public function setPut(bool $put): PostToJava
+    {
+        $this->put = $put;
+        return $this;
+    }
+
 
     public function __invoke()
     {
@@ -31,9 +51,11 @@ class PostToJava
                 'auth' => [$this->getUser(), $this->getPasswd()],
                 'body' => $this->getBody(),
             ];
-
-        $response = $client->post($this->getUrl(), $options);
-
+        if ($this->isPut()) {
+            $response = $client->put($this->getUrl(), $options);
+        } else {
+            $response = $client->post($this->getUrl(), $options);
+        }
         return $response->getBody()->getContents();
     }
 }
