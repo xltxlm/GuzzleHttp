@@ -41,7 +41,7 @@ class PostToJava
     public function __invoke()
     {
         $client = new Client();
-        $options =
+        $this->options =
             [
                 'headers' => $this->getHeader(),
                 'timeout' => $this->getTimeout(),
@@ -52,9 +52,9 @@ class PostToJava
                 'body' => $this->getBody(),
             ];
         if ($this->isPut()) {
-            $response = $client->put($this->getUrl(), $options);
+            $response = $client->put($this->getUrl(), $this->options);
         } else {
-            $response = $client->post($this->getUrl(), $options);
+            $response = $client->post($this->getUrl(), $this->options);
         }
         return $response->getBody()->getContents();
     }

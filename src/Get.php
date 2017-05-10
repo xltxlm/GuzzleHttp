@@ -19,10 +19,11 @@ class Get
 {
     use HttpBase;
 
+
     public function __invoke()
     {
         $client = new Client();
-        $options =
+        $this->options =
             [
                 "headers" => $this->header,
                 'timeout' => $this->getTimeout(),
@@ -33,7 +34,7 @@ class Get
                 'body' => $this->getBody(),
             ];
 
-        $response = $client->get($this->getUrl(), $options);
+        $response = $client->get($this->getUrl(), $this->options);
         return $response->getBody()->getContents();
     }
 }

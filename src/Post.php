@@ -18,7 +18,7 @@ class Post
     public function __invoke()
     {
         $client = new Client();
-        $options =
+        $this->options =
             [
                 "headers" => $this->getHeader(),
                 'timeout' => $this->getTimeout(),
@@ -29,7 +29,7 @@ class Post
                 'form_params' => $this->getBody()
             ];
 
-        $response = $client->post($this->getUrl(), $options);
+        $response = $client->post($this->getUrl(), $this->options);
         return $response->getBody()->getContents();
     }
 }

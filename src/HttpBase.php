@@ -34,6 +34,16 @@ trait HttpBase
     /** @var string 开启http认证的密码 */
     protected $passwd = "";
 
+    protected $options = [];
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options + ['url' => $this->getUrl()];
+    }
+
     /**
      * @return string
      */
