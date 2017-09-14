@@ -34,7 +34,29 @@ trait HttpBase
     /** @var string 开启http认证的密码 */
     protected $passwd = "";
 
+    /** @var string 代理 */
+    protected $proxy = "";
+
     protected $options = [];
+
+    /**
+     * @return string
+     */
+    public function getProxy(): string
+    {
+        return $this->proxy;
+    }
+
+    /**
+     * @param string $proxy
+     * @return static
+     */
+    public function setProxy(string $proxy)
+    {
+        $this->proxy = $proxy;
+        return $this;
+    }
+
 
     /**
      * @return array

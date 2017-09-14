@@ -32,6 +32,7 @@ class Get
                 'debug' => $this->debug,
                 'auth' => [$this->getUser(), $this->getPasswd()],
                 'body' => $this->getBody(),
+                'proxy' => $this->getProxy()
             ];
 
         $response = $client->get($this->getUrl(), $this->options);
