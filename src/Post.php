@@ -10,6 +10,7 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
+use xltxlm\logger\Operation\Action\HttpLog;
 
 class Post
 {
@@ -17,6 +18,7 @@ class Post
 
     public function __invoke()
     {
+        $start = microtime(true);
         $client = new Client();
         $this->options =
             [
@@ -30,6 +32,10 @@ class Post
             ];
 
         $response = $client->post($this->getUrl(), $this->options);
+        $time = sprintf('%.4f', microtime(true) - $start);
+        (new HttpLog($this))
+            ->setRunTime($time)
+            ->__invoke();
         return $response->getBody()->getContents();
     }
 }

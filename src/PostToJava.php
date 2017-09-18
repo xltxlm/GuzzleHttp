@@ -9,6 +9,7 @@
 namespace xltxlm\guzzlehttp;
 
 use GuzzleHttp\Client;
+use xltxlm\logger\Operation\Action\HttpLog;
 
 /**
  * 不是表单形式的提交post变量,而是类似提交到java客户端
@@ -40,6 +41,7 @@ class PostToJava
 
     public function __invoke()
     {
+        $start = microtime(true);
         $client = new Client();
         $this->options =
             [
@@ -56,6 +58,10 @@ class PostToJava
         } else {
             $response = $client->post($this->getUrl(), $this->options);
         }
+        $time = sprintf('%.4f', microtime(true) - $start);
+        (new HttpLog($this))
+            ->setRunTime($time)
+            ->__invoke();
         return $response->getBody()->getContents();
     }
 }

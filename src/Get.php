@@ -10,6 +10,7 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
+use xltxlm\logger\Operation\Action\HttpLog;
 
 /**
  * Class Get
@@ -22,6 +23,7 @@ class Get
 
     public function __invoke()
     {
+        $start = microtime(true);
         $client = new Client();
         $this->options =
             [
@@ -36,6 +38,10 @@ class Get
             ];
 
         $response = $client->get($this->getUrl(), $this->options);
+        $time = sprintf('%.4f', microtime(true) - $start);
+        (new HttpLog($this))
+            ->setRunTime($time)
+            ->__invoke();
         return $response->getBody()->getContents();
     }
 }
