@@ -60,8 +60,14 @@ class PostToJava
         }
         $time = sprintf('%.4f', microtime(true) - $start);
         (new HttpLog($this))
+            ->setMessage($this->options)
             ->setRunTime($time)
             ->__invoke();
+        if ($this->getReturnToClass()) {
+            $class = $this->getReturnToClass();
+            $json_decode = json_decode($response->getBody()->getContents(), true);
+            return $classObject = (new $class($json_decode));
+        }
         return $response->getBody()->getContents();
     }
 }

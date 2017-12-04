@@ -39,6 +39,28 @@ trait HttpBase
 
     protected $options = [];
 
+    /** @var string 把返回结果转换成对象 */
+    protected $returnToClass = "";
+
+    /**
+     * @return string
+     */
+    public function getReturnToClass(): string
+    {
+        return $this->returnToClass;
+    }
+
+    /**
+     * @param string $returnToClass
+     * @return $this
+     */
+    public function setReturnToClass(string $returnToClass)
+    {
+        $this->returnToClass = $returnToClass;
+        return $this;
+    }
+
+
     /**
      * @return string
      */

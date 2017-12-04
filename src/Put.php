@@ -2,17 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: xialintai
- * Date: 2017/2/8
- * Time: 9:53
+ * Date: 2017/10/11
+ * Time: 17:32
  */
 
-namespace xltxlm\guzzlehttp;
+namespace xltxlm\allinone\vendor\xltxlm\guzzlehttp\src;
 
 
 use GuzzleHttp\Client;
+use xltxlm\guzzlehttp\HttpBase;
 use xltxlm\logger\Operation\Action\HttpLog;
 
-class Post
+class Put
 {
     use HttpBase;
 
@@ -28,22 +29,14 @@ class Post
                 'verify' => false,
                 'debug' => $this->isDebug(),
                 'auth' => [$this->getUser(), $this->getPasswd()],
-                'form_params' => $this->getBody()
+                'body' => $this->getBody()
             ];
 
-        $response = $client->post($this->getUrl(), $this->options);
+        $response = $client->put($this->getUrl(), $this->options);
         $time = sprintf('%.4f', microtime(true) - $start);
         (new HttpLog($this))
-            ->setMessage($this->options)
             ->setRunTime($time)
             ->__invoke();
-
-        if ($this->getReturnToClass()) {
-            $class = $this->getReturnToClass();
-            $json_decode = json_decode($response->getBody()->getContents(), true);
-            return $classObject = (new $class($json_decode));
-        }
-
         return $response->getBody()->getContents();
     }
 }
