@@ -16,14 +16,15 @@ use xltxlm\logger\Operation\Action\HttpLog;
  * Class Get
  * @package xltxlm\guzzlehttp
  */
-class Get
+class Get implements UrlRequest
 {
     use HttpBase;
 
 
     public function __invoke()
     {
-        $start = microtime(true);
+        $httpLog = (new HttpLog($this))
+            ->setSqlaction('GET');
         $client = new Client();
         $this->options =
             [
@@ -38,9 +39,7 @@ class Get
             ];
 
         $response = $client->get($this->getUrl(), $this->options);
-        $time = sprintf('%.4f', microtime(true) - $start);
-        (new HttpLog($this))
-            ->setRunTime($time)
+        $httpLog
             ->__invoke();
         return $response->getBody()->getContents();
     }

@@ -6,20 +6,20 @@
  * Time: 17:32
  */
 
-namespace xltxlm\allinone\vendor\xltxlm\guzzlehttp\src;
+namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\guzzlehttp\HttpBase;
 use xltxlm\logger\Operation\Action\HttpLog;
 
-class Put
+class Put implements UrlRequest
 {
     use HttpBase;
 
     public function __invoke()
     {
-        $start = microtime(true);
+        $httpLog = (new HttpLog($this))
+            ->setSqlaction('PUT');
         $client = new Client();
         $this->options =
             [
@@ -33,9 +33,7 @@ class Put
             ];
 
         $response = $client->put($this->getUrl(), $this->options);
-        $time = sprintf('%.4f', microtime(true) - $start);
-        (new HttpLog($this))
-            ->setRunTime($time)
+        $httpLog
             ->__invoke();
         return $response->getBody()->getContents();
     }

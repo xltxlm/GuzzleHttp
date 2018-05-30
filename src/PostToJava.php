@@ -15,7 +15,7 @@ use xltxlm\logger\Operation\Action\HttpLog;
  * 不是表单形式的提交post变量,而是类似提交到java客户端
  * Class PostToJava.
  */
-class PostToJava
+class PostToJava implements UrlRequest
 {
     use HttpBase;
     protected $put = false;
@@ -41,7 +41,8 @@ class PostToJava
 
     public function __invoke()
     {
-        $start = microtime(true);
+        $httpLog = (new HttpLog($this))
+            ->setSqlaction('POSTJAVA');
         $client = new Client();
         $this->options =
             [
@@ -58,10 +59,8 @@ class PostToJava
         } else {
             $response = $client->post($this->getUrl(), $this->options);
         }
-        $time = sprintf('%.4f', microtime(true) - $start);
-        (new HttpLog($this))
+        $httpLog
             ->setMessage($this->options)
-            ->setRunTime($time)
             ->__invoke();
         if ($this->getReturnToClass()) {
             $class = $this->getReturnToClass();

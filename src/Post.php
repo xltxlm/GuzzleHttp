@@ -12,13 +12,14 @@ namespace xltxlm\guzzlehttp;
 use GuzzleHttp\Client;
 use xltxlm\logger\Operation\Action\HttpLog;
 
-class Post
+class Post implements UrlRequest
 {
     use HttpBase;
 
     public function __invoke()
     {
-        $start = microtime(true);
+        $httpLog = (new HttpLog($this))
+            ->setSqlaction('POST');
         $client = new Client();
         $this->options =
             [
@@ -32,10 +33,8 @@ class Post
             ];
 
         $response = $client->post($this->getUrl(), $this->options);
-        $time = sprintf('%.4f', microtime(true) - $start);
-        (new HttpLog($this))
-            ->setMessage($this->options)
-            ->setRunTime($time)
+        $httpLog
+            ->setMessage($this->getOptions())
             ->__invoke();
 
         if ($this->getReturnToClass()) {

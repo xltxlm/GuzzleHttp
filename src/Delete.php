@@ -11,15 +11,17 @@ namespace xltxlm\allinone\vendor\xltxlm\guzzlehttp\src;
 
 use GuzzleHttp\Client;
 use xltxlm\guzzlehttp\HttpBase;
+use xltxlm\guzzlehttp\UrlRequest;
 use xltxlm\logger\Operation\Action\HttpLog;
 
-class Delete
+class Delete implements UrlRequest
 {
     use HttpBase;
 
     public function __invoke()
     {
-        $start = microtime(true);
+        $httpLog = (new HttpLog($this))
+            ->setSqlaction('DELETE');
         $client = new Client();
         $this->options =
             [
@@ -33,9 +35,7 @@ class Delete
             ];
 
         $response = $client->delete($this->getUrl(), $this->options);
-        $time = sprintf('%.4f', microtime(true) - $start);
-        (new HttpLog($this))
-            ->setRunTime($time)
+        $httpLog
             ->__invoke();
         return $response->getBody()->getContents();
     }
