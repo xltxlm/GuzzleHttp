@@ -32,7 +32,12 @@ class Post implements UrlRequest
                 'form_params' => $this->getBody()
             ];
 
-        $response = $client->post($this->getUrl(), $this->options);
+        try {
+            $response = $client->post($this->getUrl(), $this->options);
+            $this->setReturnHeader($response->getHeaders());
+        } catch (\Exception $e) {
+            throw new \Exception("[POST]{$this->getUrl()} | ".$e->getMessage());
+        }
         $httpLog
             ->setMessage($this->getOptions())
             ->__invoke();

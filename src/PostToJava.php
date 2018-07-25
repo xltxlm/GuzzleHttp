@@ -18,26 +18,6 @@ use xltxlm\logger\Operation\Action\HttpLog;
 class PostToJava implements UrlRequest
 {
     use HttpBase;
-    protected $put = false;
-
-    /**
-     * @return bool
-     */
-    public function isPut(): bool
-    {
-        return $this->put;
-    }
-
-    /**
-     * @param bool $put
-     * @return PostToJava
-     */
-    public function setPut(bool $put): PostToJava
-    {
-        $this->put = $put;
-        return $this;
-    }
-
 
     public function __invoke()
     {
@@ -54,10 +34,11 @@ class PostToJava implements UrlRequest
                 'auth' => [$this->getUser(), $this->getPasswd()],
                 'body' => $this->getBody(),
             ];
-        if ($this->isPut()) {
-            $response = $client->put($this->getUrl(), $this->options);
-        } else {
+
+        try {
             $response = $client->post($this->getUrl(), $this->options);
+        } catch (\Exception $e) {
+            throw new \Exception("[POST-JAVA]{$this->getUrl()} | " . $e->getMessage());
         }
         $httpLog
             ->setMessage($this->options)

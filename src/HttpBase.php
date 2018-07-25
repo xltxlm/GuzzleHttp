@@ -237,7 +237,7 @@ trait HttpBase
 
     /**
      * @param string $referer
-     * @return static
+     * @return $this
      */
     public function setReferer($referer)
     {
@@ -250,6 +250,51 @@ trait HttpBase
             $this->setHeader('Referer', $this->referer);
         }
 
+        return $this;
+    }
+
+    protected $allow_redirects = true;
+
+    /**
+     * @return bool
+     */
+    public function isAllowRedirects(): bool
+    {
+        return $this->allow_redirects;
+    }
+
+    /**
+     * @param bool $allow_redirects
+     * @return $this
+     */
+    public function setAllowRedirects(bool $allow_redirects)
+    {
+        $this->allow_redirects = $allow_redirects;
+        return $this;
+    }
+
+
+    /**
+     * 服务端返回的头部数据
+     * @var array
+     */
+    protected $returnHeader = [];
+
+    /**
+     * @return array
+     */
+    public function getReturnHeader(): array
+    {
+        return $this->returnHeader;
+    }
+
+    /**
+     * @param array $returnHeader
+     * @return $this
+     */
+    public function setReturnHeader(array $returnHeader)
+    {
+        $this->returnHeader = $returnHeader;
         return $this;
     }
 

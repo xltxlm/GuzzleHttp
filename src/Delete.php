@@ -34,7 +34,11 @@ class Delete implements UrlRequest
                 'body' => $this->getBody()
             ];
 
-        $response = $client->delete($this->getUrl(), $this->options);
+        try {
+            $response = $client->delete($this->getUrl(), $this->options);
+        } catch (\Exception $e) {
+            throw new \Exception("[DELETE]{$this->getUrl()} | ".$e->getMessage());
+        }
         $httpLog
             ->__invoke();
         return $response->getBody()->getContents();

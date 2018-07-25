@@ -2,29 +2,24 @@
 /**
  * Created by PhpStorm.
  * User: xialintai
- * Date: 2017/2/8
- * Time: 9:52
+ * Date: 2018/6/8
+ * Time: 上午11:34
  */
 
 namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\logger\Operation\Action\HttpLog;
 
-/**
- * Class Get
- * @package xltxlm\guzzlehttp
- */
-class Get implements UrlRequest
+class Head implements UrlRequest
 {
     use HttpBase;
 
-
+    /**
+     * @return \string[][]
+     */
     public function __invoke()
     {
-        $httpLog = (new HttpLog($this))
-            ->setSqlaction('GET');
         $client = new Client();
         $this->options =
             [
@@ -38,15 +33,9 @@ class Get implements UrlRequest
                 'body' => $this->getBody(),
                 'proxy' => $this->getProxy()
             ];
-
-        try {
-            $response = $client->get($this->getUrl(), $this->options);
-            $this->setReturnHeader($response->getHeaders());
-        } catch (\Exception $e) {
-            throw new \Exception("[GET]{$this->getUrl()} | ".$e->getMessage());
-        }
-        $httpLog
-            ->__invoke();
-        return $response->getBody()->getContents();
+        $response = $client->head($this->getUrl(), $this->options);
+        $this->setReturnHeader($response->getHeaders());
+        return $response->getHeaders();
     }
+
 }
