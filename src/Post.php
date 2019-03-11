@@ -10,6 +10,8 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
+use Psr\Log\LogLevel;
+use xltxlm\logger\Grpclog\Grpclog;
 use xltxlm\logger\Operation\Action\HttpLog;
 
 class Post implements UrlRequest
@@ -18,8 +20,9 @@ class Post implements UrlRequest
 
     public function __invoke()
     {
-        $httpLog = (new HttpLog($this))
-            ->setSqlaction('POST');
+        $Grpclog = (new Grpclog())
+            ->setip($this->getUrl())
+            ->setLogtype('POST');
         $client = new Client();
         $this->options =
             [
@@ -32,22 +35,29 @@ class Post implements UrlRequest
                 'form_params' => $this->getBody()
             ];
 
+        $return_data = "";
         try {
             $response = $client->post($this->getUrl(), $this->options);
             $this->setReturnHeader($response->getHeaders());
+            $return_data = $response->getBody()->getContents();
+            $Grpclog
+                ->setreturn_data($return_data);
         } catch (\Exception $e) {
-            throw new \Exception("[POST]{$this->getUrl()} | ".$e->getMessage());
+            $Grpclog
+                ->seterror("[POST]{$this->getUrl()} | " . $e->getMessage())
+                ->__invoke();
+            throw new \Exception("[POST]{$this->getUrl()} | " . $e->getMessage());
         }
-        $httpLog
-            ->setMessage($this->getOptions())
+        $Grpclog
+            ->setrequest_data(json_encode($this->getOptions(), JSON_UNESCAPED_UNICODE))
             ->__invoke();
-
+        unset($Grpclog);
         if ($this->getReturnToClass()) {
             $class = $this->getReturnToClass();
-            $json_decode = json_decode($response->getBody()->getContents(), true);
+            $json_decode = json_decode($return_data, true);
             return $classObject = (new $class($json_decode));
         }
 
-        return $response->getBody()->getContents();
+        return $return_data;
     }
 }

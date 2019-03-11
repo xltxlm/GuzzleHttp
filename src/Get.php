@@ -10,6 +10,7 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
+use xltxlm\logger\Grpclog\Grpclog;
 use xltxlm\logger\Operation\Action\HttpLog;
 
 /**
@@ -23,12 +24,13 @@ class Get implements UrlRequest
 
     public function __invoke()
     {
-        $httpLog = (new HttpLog($this))
-            ->setSqlaction('GET');
+        $Grpclog = (new Grpclog())
+            ->setip($this->getUrl())
+            ->setLogtype('GET');
         $client = new Client();
         $this->options =
             [
-                'allow_redirects'=>$this->isAllowRedirects(),
+                'allow_redirects' => $this->isAllowRedirects(),
                 "headers" => $this->header,
                 'timeout' => $this->getTimeout(),
                 //不检查https证书的合法性
@@ -39,14 +41,20 @@ class Get implements UrlRequest
                 'proxy' => $this->getProxy()
             ];
 
+        $return_data = '';
         try {
             $response = $client->get($this->getUrl(), $this->options);
+            $return_data = $response->getBody()->getContents();
             $this->setReturnHeader($response->getHeaders());
+            $Grpclog
+                ->setreturn_data($return_data);
         } catch (\Exception $e) {
-            throw new \Exception("[GET]{$this->getUrl()} | ".$e->getMessage());
+            $Grpclog
+                ->seterror("[GET]{$this->getUrl()} | " . $e->getMessage())
+                ->__invoke();
+            throw new \Exception("[GET]{$this->getUrl()} | " . $e->getMessage());
         }
-        $httpLog
-            ->__invoke();
-        return $response->getBody()->getContents();
+        unset($Grpclog);
+        return $return_data;
     }
 }
