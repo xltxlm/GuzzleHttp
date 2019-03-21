@@ -18,12 +18,20 @@ class Post implements UrlRequest
 {
     use HttpBase;
 
-    public function __invoke()
+    /**
+     * 如果传递了请求实例进来,那么可以变成keep-Alive长连接
+     * @param Client|null $client
+     * @return string
+     * @throws \Exception
+     */
+    public function __invoke(Client $client = null)
     {
         $Grpclog = (new Grpclog())
             ->setip($this->getUrl())
             ->setLogtype('POST');
-        $client = new Client();
+        if ($client == null) {
+            $client = new Client();
+        }
         $this->options =
             [
                 "headers" => $this->getHeader(),

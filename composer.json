@@ -7,21 +7,20 @@
       "email": "xltxlm@qq.com"
     }
   ],
+  "minimum-stability": "dev",
   "require": {
     "php": ">=7.0",
+    "xltxlm/logger": "@dev",
+    "xltxlm/redis": "@dev",
     "guzzlehttp/guzzle": "*"
   },
   "autoload": {
     "psr-4": {
       "xltxlm\\guzzlehttp\\": [
         "src/"
-      ]
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "xltxlm\\guzzlehttp\\": [
-        "./"
+      ],
+      "": [
+        "./project"
       ]
     }
   }
