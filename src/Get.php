@@ -10,7 +10,7 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\logger\Grpclog\Grpclog;
+use xltxlm\logger\Operation\Action\HttpLog;
 
 /**
  * Class Get
@@ -28,9 +28,9 @@ class Get implements UrlRequest
      */
     public function __invoke(Client $client = null)
     {
-        $Grpclog = (new Grpclog())
-            ->setip($this->getUrl())
-            ->setLogtype('GET');
+        $httpLog = (new HttpLog($this))
+            ->setUrl($this->getUrl())
+            ->setSqlaction('GET');
         if ($client == null) {
             $client = new Client();
         }
@@ -52,15 +52,19 @@ class Get implements UrlRequest
             $response = $client->get($this->getUrl(), $this->options);
             $return_data = $response->getBody()->getContents();
             $this->setReturnHeader($response->getHeaders());
-            $Grpclog
-                ->setreturn_data($return_data);
+            $httpLog
+                ->setMessage($return_data);
         } catch (\Exception $e) {
-            $Grpclog
-                ->seterror("[GET]{$this->getUrl()} | " . $e->getMessage())
+            $httpLog
+                ->setException("[GET]{$this->getUrl()} | " . $e->getMessage())
                 ->__invoke();
+            unset($httpLog);
             throw new \Exception("[GET]{$this->getUrl()} | " . $e->getMessage());
         }
-        unset($Grpclog);
+        $httpLog
+            ->setPdoSql(json_encode($this->getOptions(), JSON_UNESCAPED_UNICODE))
+            ->__invoke();
+        unset($httpLog);
         return $return_data;
     }
 }

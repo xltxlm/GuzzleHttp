@@ -26,9 +26,9 @@ class Post implements UrlRequest
      */
     public function __invoke(Client $client = null)
     {
-        $Grpclog = (new Grpclog())
-            ->setip($this->getUrl())
-            ->setLogtype('POST');
+        $httpLog = (new HttpLog($this))
+            ->setUrl($this->getUrl())
+            ->setSqlaction('POST');
         if ($client == null) {
             $client = new Client();
         }
@@ -48,16 +48,17 @@ class Post implements UrlRequest
             $response = $client->post($this->getUrl(), $this->options);
             $this->setReturnHeader($response->getHeaders());
             $return_data = $response->getBody()->getContents();
-            $Grpclog
-                ->setreturn_data($return_data);
+            $httpLog
+                ->setMessage($return_data);
         } catch (\Exception $e) {
-            $Grpclog
-                ->seterror("[POST]{$this->getUrl()} | " . $e->getMessage())
+            $httpLog
+                ->setException("[POST]{$this->getUrl()} | " . $e->getMessage())
                 ->__invoke();
+            unset($httpLog);
             throw new \Exception("[POST]{$this->getUrl()} | " . $e->getMessage());
         }
-        $Grpclog
-            ->setrequest_data(json_encode($this->getOptions(), JSON_UNESCAPED_UNICODE))
+        $httpLog
+            ->setPdoSql(json_encode($this->getOptions(), JSON_UNESCAPED_UNICODE))
             ->__invoke();
         unset($Grpclog);
         if ($this->getReturnToClass()) {
