@@ -5,3 +5,4 @@ temp
 project
 gitpush.sh
 composer.lock
+*.7z
