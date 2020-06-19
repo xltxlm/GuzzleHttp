@@ -1,27 +1,34 @@
 {
   "name": "xltxlm/guzzlehttp",
-  "description": "GuzzleHttp作为底层的http接口",
   "authors": [
     {
-      "name": "xltxlm",
+      "name": "copygithub",
       "email": "xltxlm@qq.com"
     }
   ],
   "minimum-stability": "dev",
+  "description":"GuzzleHttp作为底层的http接口函数",
   "require": {
-    "php": ">=7.0",
-    "xltxlm/logger": "@dev",
-    "xltxlm/redis": "@dev",
-    "guzzlehttp/guzzle": "*"
+    "php": "~7.1",
+    "guzzlehttp/guzzle": "~6.5",
+    "xltxlm/logger": "@dev"
   },
   "autoload": {
     "psr-4": {
       "xltxlm\\guzzlehttp\\": [
-        "src/"
-      ],
-      "": [
-        "./project"
+        "src/",
+        "./"
       ]
-    }
+    },
+    "files": [
+    ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
+  },
+  "scripts": {
+    "test": [
+      "vendor/bin/phpunit ./test -v --colors=auto --enforce-time-limit"
+    ]
   }
 }

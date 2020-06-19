@@ -10,17 +10,14 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\logger\Operation\Action\HttpLog;
+use xltxlm\logger\LoggerTrack;
 
 class Put implements UrlRequest
 {
     use HttpBase;
 
-    public function __invoke()
+    public function __invoke(Client $client = null)
     {
-        $httpLog = (new HttpLog($this))
-            ->setSqlaction('PUT');
-        $client = new Client();
         $this->options =
             [
                 "headers" => $this->getHeader(),
@@ -31,14 +28,28 @@ class Put implements UrlRequest
                 'auth' => [$this->getUser(), $this->getPasswd()],
                 'body' => $this->getBody()
             ];
+        $context = [
+            'type' => __CLASS__,
+            'options' => $this->options
+        ];
 
+        $LoggerTrack = (new LoggerTrack())
+            ->setresource_type('http')
+            ->setcontext($context);
+
+        if ($client == null) {
+            $client = new Client();
+        }
         try {
             $response = $client->put($this->getUrl(), $this->options);
+            $return_data = $response->getBody()->getContents();
+            $LoggerTrack
+                ->setcontext($context + ['return_data' => $return_data]);
         } catch (\Exception $e) {
             throw new \Exception("[PUT]{$this->getUrl()} | " . $e->getMessage());
         }
-        $httpLog
+        $LoggerTrack
             ->__invoke();
-        return $response->getBody()->getContents();
+        return $return_data;
     }
 }

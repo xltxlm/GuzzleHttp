@@ -10,10 +10,11 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\logger\Operation\Action\HttpLog;
+use xltxlm\logger\LoggerTrack;
 
 /**
  * Class Get
+ *
  * @package xltxlm\guzzlehttp
  */
 class Get implements UrlRequest
@@ -22,18 +23,14 @@ class Get implements UrlRequest
 
     /**
      * 如果传递了请求实例进来,那么可以变成keep-Alive长连接
+     *
      * @param Client|null $client
      * @return string
      * @throws \Exception
      */
     public function __invoke(Client $client = null)
     {
-        $httpLog = (new HttpLog($this))
-            ->setUrl($this->getUrl())
-            ->setSqlaction('GET');
-        if ($client == null) {
-            $client = new Client();
-        }
+
         $this->options =
             [
                 'allow_redirects' => $this->isAllowRedirects(),
@@ -47,24 +44,30 @@ class Get implements UrlRequest
                 'proxy' => $this->getProxy()
             ];
 
+        $context = [
+            'type' => __CLASS__,
+            'options' => $this->options
+        ];
+        $LoggerTrack = (new LoggerTrack())
+            ->setresource_type('http')
+            ->setcontext($context);
+        if ($client == null) {
+            $client = new Client();
+        }
         $return_data = '';
         try {
             $response = $client->get($this->getUrl(), $this->options);
             $return_data = $response->getBody()->getContents();
             $this->setReturnHeader($response->getHeaders());
-            $httpLog
-                ->setMessage($return_data);
+            $LoggerTrack
+                ->setcontext($context + ['return_data' => $return_data]);
         } catch (\Exception $e) {
-            $httpLog
-                ->setException("[GET]{$this->getUrl()} | " . $e->getMessage())
-                ->__invoke();
-            unset($httpLog);
-            throw new \Exception("[GET]{$this->getUrl()} | " . $e->getMessage());
+            $LoggerTrack
+                ->setcontext($context + ['exception' => "[GET]{$this->getUrl()} | " . $e->getMessage()]);
+            $LoggerTrack->__invoke();
+            throw new \Exception("[GET]{$this->getUrl()} (proxy:{$this->getProxy()}) | " . $e->getMessage());
         }
-        $httpLog
-            ->setPdoSql(json_encode($this->getOptions(), JSON_UNESCAPED_UNICODE))
-            ->__invoke();
-        unset($httpLog);
+        $LoggerTrack->__invoke();
         return $return_data;
     }
 }

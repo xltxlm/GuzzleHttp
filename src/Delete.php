@@ -6,13 +6,11 @@
  * Time: 17:32
  */
 
-namespace xltxlm\allinone\vendor\xltxlm\guzzlehttp\src;
+namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
-use xltxlm\guzzlehttp\HttpBase;
-use xltxlm\guzzlehttp\UrlRequest;
-use xltxlm\logger\Operation\Action\HttpLog;
+use xltxlm\logger\LoggerTrack;
 
 class Delete implements UrlRequest
 {
@@ -20,9 +18,6 @@ class Delete implements UrlRequest
 
     public function __invoke()
     {
-        $httpLog = (new HttpLog($this))
-            ->setSqlaction('DELETE');
-        $client = new Client();
         $this->options =
             [
                 "headers" => $this->getHeader(),
@@ -34,12 +29,21 @@ class Delete implements UrlRequest
                 'body' => $this->getBody()
             ];
 
+
+        $LoggerTrack = (new LoggerTrack())
+            ->setresource_type('http')
+            ->setcontext([
+                'type' => __CLASS__,
+                'options' => $this->options
+            ]);
+        $client = new Client();
+
         try {
             $response = $client->delete($this->getUrl(), $this->options);
         } catch (\Exception $e) {
-            throw new \Exception("[DELETE]{$this->getUrl()} | ".$e->getMessage());
+            throw new \Exception("[DELETE]{$this->getUrl()} | " . $e->getMessage());
         }
-        $httpLog
+        $LoggerTrack
             ->__invoke();
         return $response->getBody()->getContents();
     }
