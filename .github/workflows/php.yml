@@ -31,7 +31,7 @@ jobs:
       run: composer install
 
     - name: 启动web服务;
-      run: nohup php -S 0.0.0.0:8088 -t ./test &;
+      run: nohup php -S 0.0.0.0:8088 -t ./test &
 
     - name: Test
       run: composer run-script test
