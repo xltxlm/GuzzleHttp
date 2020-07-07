@@ -10,6 +10,7 @@ namespace xltxlm\guzzlehttp;
 
 
 use GuzzleHttp\Client;
+use xltxlm\guzzlehttp\Get\Get_implements;
 use xltxlm\logger\LoggerTrack;
 
 /**
@@ -17,7 +18,7 @@ use xltxlm\logger\LoggerTrack;
  *
  * @package xltxlm\guzzlehttp
  */
-class Get implements UrlRequest
+class Get extends Get_implements implements UrlRequest
 {
     use HttpBase;
 
@@ -28,7 +29,7 @@ class Get implements UrlRequest
      * @return string
      * @throws \Exception
      */
-    public function __invoke(Client $client = null)
+    public function __invoke(Client $client = null): string
     {
 
         $this->options =
@@ -60,11 +61,11 @@ class Get implements UrlRequest
             $return_data = $response->getBody()->getContents();
             $this->setReturnHeader($response->getHeaders());
             $LoggerTrack
-                ->setcontext($context + ['return_data' => $return_data]);
+                ->setcontext(['return_data' => $return_data]);
         } catch (\Exception $e) {
             $LoggerTrack
-                ->setcontext($context + ['exception' => "[GET]{$this->getUrl()} | " . $e->getMessage()]);
-            $LoggerTrack->__invoke();
+                ->setcontext(['exception' => "[GET]{$this->getUrl()} | " . $e->getMessage()])
+                ->__invoke();
             throw new \Exception("[GET]{$this->getUrl()} (proxy:{$this->getProxy()}) | " . $e->getMessage());
         }
         $LoggerTrack->__invoke();

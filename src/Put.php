@@ -44,8 +44,11 @@ class Put implements UrlRequest
             $response = $client->put($this->getUrl(), $this->options);
             $return_data = $response->getBody()->getContents();
             $LoggerTrack
-                ->setcontext($context + ['return_data' => $return_data]);
+                ->setcontext(['return_data' => $return_data]);
         } catch (\Exception $e) {
+            $LoggerTrack
+                ->setcontext(['exception' => "[PUT]{$this->getUrl()} | " . $e->getMessage()])
+                ->__invoke();
             throw new \Exception("[PUT]{$this->getUrl()} | " . $e->getMessage());
         }
         $LoggerTrack

@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ "7.3" ]
+        php: [ "7.2","7.3", ]
     steps:
 
     - name: Setup PHP - ${{ matrix.php }}
@@ -30,11 +30,8 @@ jobs:
     - name: Install dependencies
       run: composer install
 
-    - name: Test-phps
-      run: nohup php -S 0.0.0.0:8088 -t ./src &
-
-    - name: Testdk
-      run: netstat -tnlpu
+    - name: 启动web服务;
+      run: nohup php -S 0.0.0.0:8088 -t ./test &;
 
     - name: Test
       run: composer run-script test

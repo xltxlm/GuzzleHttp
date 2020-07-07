@@ -47,12 +47,11 @@ class PostToJava implements UrlRequest
             $response = $client->post($this->getUrl(), $this->options);
             $return_data = $response->getBody()->getContents();
             $LoggerTrack
-                ->setcontext($context + ['return_data' => $return_data]);
+                ->setcontext( ['return_data' => $return_data]);
         } catch (\Exception $e) {
             $LoggerTrack
-                ->setcontext($context + ['exception' => "[POST-JAVA]{$this->getUrl()} | " . $e->getMessage()])
+                ->setcontext( ['exception' => "[POST-JAVA]{$this->getUrl()} | " . $e->getMessage()])
                 ->__invoke();
-            $LoggerTrack->__invoke();
             throw new \Exception("[POST-JAVA]{$this->getUrl()} | " . $e->getMessage());
         }
         $LoggerTrack->__invoke();

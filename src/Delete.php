@@ -37,14 +37,21 @@ class Delete implements UrlRequest
                 'options' => $this->options
             ]);
         $client = new Client();
-
+        $return_data = "";
         try {
             $response = $client->delete($this->getUrl(), $this->options);
+            $return_data = $response->getBody()->getContents();
+            $this->setReturnHeader($response->getHeaders());
+            $LoggerTrack
+                ->setcontext(['return_data' => $return_data]);
         } catch (\Exception $e) {
+            $LoggerTrack
+                ->setcontext(['exception' => "[Delete]{$this->getUrl()} | " . $e->getMessage()])
+                ->__invoke();
             throw new \Exception("[DELETE]{$this->getUrl()} | " . $e->getMessage());
         }
         $LoggerTrack
             ->__invoke();
-        return $response->getBody()->getContents();
+        return $return_data;
     }
 }

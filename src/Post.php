@@ -53,12 +53,11 @@ class Post implements UrlRequest
             $this->setReturnHeader($response->getHeaders());
             $return_data = $response->getBody()->getContents();
             $LoggerTrack
-                ->setcontext($context + ['return_data' => $return_data]);
+                ->setcontext( ['return_data' => $return_data]);
         } catch (\Exception $e) {
             $LoggerTrack
-                ->setcontext($context + ['exception' => "[POST]{$this->getUrl()} | " . $e->getMessage()])
+                ->setcontext(['exception' => "[POST]{$this->getUrl()} | " . $e->getMessage()])
                 ->__invoke();
-            $LoggerTrack->__invoke();
             throw new \Exception("[POST]{$this->getUrl()} | " . $e->getMessage());
         }
         $LoggerTrack->__invoke();
