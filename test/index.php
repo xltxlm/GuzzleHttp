@@ -1,5 +1,6 @@
 <?php
 header("hello:ok");
+header("logid:" . uniqid());
 /**
  * 给单元测试提供真实的模拟的测试接口
  */
