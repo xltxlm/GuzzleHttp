@@ -33,6 +33,7 @@ class PostToJava implements UrlRequest
             ];
         $context = [
             'type' => __CLASS__,
+            'url' => $this->getUrl(),
             'options' => $this->options
         ];
 

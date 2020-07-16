@@ -47,6 +47,7 @@ class Get extends Get_implements implements UrlRequest
 
         $context = [
             'type' => __CLASS__,
+            'url' => $this->getUrl(),
             'options' => $this->options
         ];
         $LoggerTrack = (new LoggerTrack())

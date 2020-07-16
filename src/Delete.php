@@ -34,6 +34,7 @@ class Delete implements UrlRequest
             ->setresource_type('http')
             ->setcontext([
                 'type' => __CLASS__,
+                'url' => $this->getUrl(),
                 'options' => $this->options
             ]);
         $client = new Client();
